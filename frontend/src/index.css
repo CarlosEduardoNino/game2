@@ -1,0 +1,443 @@
+:root {
+  --primary: #3b82f6;
+  --secondary: #60a5fa;
+  --accent: #93c5fd;
+  --background: #f0f9ff;
+  --surface: #ffffff;
+  --text: #1e3a8a;
+  --glass: rgba(255, 255, 255, 0.7);
+}
+
+body {
+  margin: 0;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  background: var(--background);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2rem;
+  width: 100%;
+  max-width: 1100px;
+  margin-top: 1rem;
+}
+
+@media (max-width: 900px) {
+  .main-content {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.glass-card {
+  background: var(--glass);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 2rem;
+  box-sizing: border-box;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin: 0.5rem 0;
+  background: linear-gradient(to right, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+}
+
+/* Roulette Styling */
+.roulette-wrapper {
+  position: relative;
+  width: 380px;
+  aspect-ratio: 1 / 1;
+  margin: 1.5rem 0;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.roulette-wrapper.fullscreen {
+  width: 85vmin;
+  height: 85vmin;
+  max-width: 95vw;
+  max-height: 85vh;
+}
+
+.roulette-container {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: none;
+  box-shadow: none;
+  position: relative;
+  overflow: visible;
+  /* Changed to visible to ensure labels aren't cut */
+  transition: transform 5s cubic-bezier(0.15, 0, 0.15, 1);
+  background: transparent;
+}
+
+.pointer {
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 50px;
+  background: #ff4757;
+  clip-path: polygon(50% 100%, 0 0, 100% 0);
+  z-index: 10;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+}
+
+.center-hub {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70px;
+  height: 70px;
+  background: var(--surface);
+  border: 6px solid var(--primary);
+  border-radius: 50%;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.spin-button {
+  margin-top: 2rem;
+  padding: 1.2rem 4rem;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: white;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border: none;
+  border-radius: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 20px rgba(59, 130, 246, 0.4);
+}
+
+.spin-button:hover:not(:disabled) {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 20px 30px rgba(59, 130, 246, 0.5);
+}
+
+/* Fullscreen Overlay for Spin */
+.fullscreen-spin-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(15px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.spinning-title {
+  color: white;
+  font-size: 3rem;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  text-shadow: 0 0 20px var(--primary);
+  text-align: center;
+  font-weight: 800;
+}
+
+@media (max-width: 600px) {
+  .spinning-title {
+    font-size: 2rem;
+  }
+}
+
+/* Winner Celebration */
+.result-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 300;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* Food Rain */
+.food-rain-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 250;
+  overflow: hidden;
+}
+
+.food-item {
+  position: absolute;
+  font-size: 3.5rem;
+  animation: fallDown linear forwards;
+}
+
+@keyframes fallDown {
+  0% {
+    transform: translateY(-100px) rotate(0deg);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  90% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(110vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+.winner-card {
+  background: var(--surface);
+  padding: 4rem;
+  border-radius: 3rem;
+  text-align: center;
+  transform: scale(0);
+  animation: popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+  border: 6px solid var(--primary);
+  max-width: 90%;
+}
+
+@keyframes popIn {
+  to {
+    transform: scale(1);
+  }
+}
+
+.winner-name-huge {
+  font-size: 6rem;
+  font-weight: 950;
+  color: var(--primary);
+  margin: 2rem 0;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes scaleIn {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Participant Management UI */
+.management-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.participant-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+.input-group {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 1.2rem;
+  border-radius: 1rem;
+  border: 2px solid var(--accent);
+  font-size: 1.2rem;
+  transition: all 0.3s;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.form-input:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+.add-button {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 1.2rem;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  border: none;
+  border-radius: 1rem;
+  font-weight: 800;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.add-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+  filter: brightness(1.1);
+}
+
+.participant-list {
+  width: 100%;
+  list-style: none;
+  padding: 0.5rem;
+  margin: 0;
+  max-height: 280px;
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 1.2rem;
+  border: 1px solid rgba(147, 197, 253, 0.3);
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.02);
+}
+
+/* Custom Scrollbar */
+.participant-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.participant-list::-webkit-scrollbar-thumb {
+  background: var(--secondary);
+  border-radius: 10px;
+}
+
+.participant-list::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+}
+
+.participant-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: white;
+  margin: 0.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s;
+}
+
+.participant-item:hover {
+  transform: scale(1.02);
+  box-shadow: 0 5px 15px rgba(59, 130, 246, 0.1);
+}
+
+.delete-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  opacity: 0.4;
+  transition: opacity 0.2s;
+}
+
+.delete-btn:hover {
+  opacity: 1;
+}
+
+/* History Table UI */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 1.5rem;
+  background: rgba(255, 255, 255, 0.6);
+  margin-top: 1rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.history-table th {
+  padding: 1.5rem;
+  background: var(--primary);
+  color: white;
+  text-align: left;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.history-table td {
+  padding: 1.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  font-weight: 500;
+}
+
+.week-badge {
+  background: #dbeafe;
+  color: #1e40af;
+  padding: 0.4rem 1rem;
+  border-radius: 2rem;
+  font-weight: 800;
+  font-size: 0.9rem;
+}
