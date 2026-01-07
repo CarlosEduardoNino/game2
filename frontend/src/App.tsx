@@ -17,7 +17,7 @@ function App() {
   const [foodRain, setFoodRain] = useState<{ id: number, emoji: string, left: string, duration: string, delay: string }[]>([])
 
   const fetchParticipants = () => {
-    fetch('http://localhost:8000/api/participants')
+    fetch('/api/participants')
       .then(res => res.json())
       .then(data => {
         setParticipants(data)
@@ -26,7 +26,7 @@ function App() {
   }
 
   const fetchHistory = () => {
-    fetch('http://localhost:8000/api/history')
+    fetch('/api/history')
       .then(res => res.json())
       .then(data => {
         setHistory(data)
@@ -56,7 +56,7 @@ function App() {
       return
     }
 
-    fetch('http://localhost:8000/api/participants', {
+    fetch('/api/participants', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: newName.trim() })
@@ -68,14 +68,14 @@ function App() {
 
   const handleDeleteParticipant = (name: string) => {
     if (window.confirm(`¿Seguro que quieres eliminar a ${name}?`)) {
-      fetch(`http://localhost:8000/api/participants/${encodeURIComponent(name)}`, { method: 'DELETE' })
+      fetch(`/api/participants/${encodeURIComponent(name)}`, { method: 'DELETE' })
         .then(() => fetchParticipants())
     }
   }
 
   const handleClearHistory = () => {
     if (window.confirm("¿Seguro que quieres borrar todo el historial?")) {
-      fetch('http://localhost:8000/api/history', { method: 'DELETE' })
+      fetch('/api/history', { method: 'DELETE' })
         .then(() => fetchHistory())
     }
   }
@@ -87,7 +87,7 @@ function App() {
     setTargetIndex(null);
     setFoodRain([]);
 
-    fetch('http://localhost:8000/api/spin', { method: 'POST' })
+    fetch('/api/spin', { method: 'POST' })
       .then(res => {
         if (!res.ok) throw new Error("Error en el servidor");
         return res.json();

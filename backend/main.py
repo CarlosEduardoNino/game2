@@ -152,21 +152,28 @@ from fastapi.responses import FileResponse
 
 # ... (rest of the code remains same until static serving)
 
-# Serve static assets
-static_dir = os.path.join(os.path.dirname(__file__), "static")
-assets_dir = os.path.join(static_dir, "assets")
+# Production Static Serving and SPA Support
+# Change this to "frontend/dist" for deployment, or just "dist" if you copy files
+# We will use "dist" as the default production folder
+dist_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend", "dist")
+if not os.path.exists(dist_dir):
+    # Fallback for local folder named "static" if that's what we used before
+    dist_dir = os.path.join(os.path.dirname(__file__), "static")
 
-if os.path.exists(assets_dir):
-    app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
+if os.path.exists(dist_dir):
+    assets_dir = os.path.join(dist_dir, "assets")
+    if os.path.exists(assets_dir):
+        app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
 
 @app.get("/{full_path:path}")
 async def serve_spa(full_path: str):
-    # This acts as a catch-all for the Single Page Application
-    index_file = os.path.join(static_dir, "index.html")
+    # Return index.html for any route that doesn't match an API
+    index_file = os.path.join(dist_dir, "index.html")
     if os.path.exists(index_file):
         return FileResponse(index_file)
-    return {"error": "Frontend not found. Please run build."}
+    return {"error": "Frontend build not found. Please run 'npm run build' in the frontend folder."}
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    # Allow external connections in production
+    uvicorn.run(app, host="0.0.0.0", port=8000)
